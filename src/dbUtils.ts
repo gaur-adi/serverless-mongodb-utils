@@ -80,7 +80,9 @@ export const deleteDocuments = async (collectionName: string, query?: Record<str
   }
 
   const userLogin = getUserLogin()
-  await auditRecord(userLogin.user._id, userLogin.user.email, 'DELETE', JSON.stringify(query), new Date(), collectionName)
+  const userId = userLogin?.user?._id ?? 'SYSTEM'
+  const userName = userLogin?.user?.email ?? 'SYSTEM'
+  await auditRecord(userId, userName, 'DELETE', JSON.stringify(query), new Date(), collectionName)
 
   if (failIfNoMatch && deleteResult.deletedCount === 0) {
     throw new Error('NO_MATCH' + JSON.stringify(query))
